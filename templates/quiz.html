@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fashion Quiz</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+</head>
+<body>
+    <div class="quiz-container">
+        <h1 class="title">Fashion Knowledge Quiz</h1>
+        <div id="quiz-content">
+            <!-- Questions will be loaded here dynamically -->
+        </div>
+        <div id="score" class="score">Score: {{ current_score }}</div>
+        <button id="nextButton" class="next-button" style="display: none;" onclick="submitAnswer()">Next Question</button>
+    </div>
+    
+    <script>
+        const questions = JSON.parse('{{ questions | tojson | safe }}');
+        let currentQuestion = 0;
+        let score = Number('{{ current_score }}');
+        const gameId = '{{ game_id }}';
+        
+        function loadQuestion() {
+            const question = questions[currentQuestion];
+            const quizContent = document.getElementById('quiz-content');
+            
+            quizContent.innerHTML = `
+                <div class="question">
+                    <h2>${question.question}</h2>
+                    <div class="options">
+                        ${question.options.map(option => `
+                            <div class="option" onclick="selectOption(this, '${option}')">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        
+        function selectOption(element, answer) {
+            // Remove previous selections
+            document.querySelectorAll('.option').forEach(opt => 
+                opt.classList.remove('selected'));
+            
+            // Select current option
+            element.classList.add('selected');
+            
+            // Show next button
+            document.getElementById('nextButton').style.display = 'block';
+        }
+        
+        function submitAnswer() {
+            const selectedOption = document.querySelector('.option.selected');
+            if (!selectedOption) return;
+            
+            const answer = selectedOption.textContent.trim();
+            
+            fetch(`/quiz/${gameId}/answer`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ answer: answer })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.correct) {
+                    score = data.score;
+                    document.getElementById('score').textContent = `Score: ${score}`;
+                }
+                
+                if (data.is_complete) {
+                    // Game completed - send score to backend
+                    fetch(`/game/${gameId}/complete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ final_score: score })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        window.location.href = `/complete/${gameId}`;
+                    });
+                } else {
+                    currentQuestion++;
+                    loadQuestion();
+                    document.getElementById('nextButton').style.display = 'none';
+                }
+            });
+        }
+        
+        // Load first question when page loads
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique Break - Fashion Escape Room</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <div class="welcome-container">
+        <h1 class="title"> Boutique Break</h1>
+        <p class="subtitle">
+            Step into our magical fashion boutique where style meets mystery!
+            Can you solve the fashionable puzzles and unlock your way to the runway?
+        </p>
+
+        <div class="game-rules">
+            <h2>Your Mission</h2>
+            <ul>
+                <li>Solve the color matching challenge</li>
+                <li>Complete the fashion knowledge quiz</li>
+                <li>Earn points for each correct answer</li>
+                <li>Unlock the path to become a fashion expert!</li>
+            </ul>
+        </div>
+
+        <button class="start-button" onclick="startGame()">Start Your Fashion Adventure!</button>
+    </div>
+
+    <script>
+        function startGame() {
+            // Make API call to start new game
+            fetch('/game/start', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.game_id) {
+                    // Redirect to the first puzzle
+                    window.location.href = `/puzzle/color/${data.game_id}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error starting game:', error);
+                alert('Oops! Something went wrong. Please try again!');
+            });
+        }
+    </script>
+</body>
+</html>

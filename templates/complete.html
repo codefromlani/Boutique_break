@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Complete</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+</head>
+<body>
+    <div class="completion-container">
+        <h1 class="title">Congratulations!</h1>
+        <p class="subtitle">You've completed your fashion adventure!</p>
+        
+        <div class="score-summary">
+            <h2>Your Final Score</h2>
+            <div class="final-score">{{ final_score }} / {{ max_score }}</div>
+            
+            <div class="score-message">
+                {% if final_score == max_score %}
+                    Perfect score! You're a true fashion expert!
+                {% elif final_score >= max_score * 0.7 %}
+                    Great job! You have a wonderful sense of style!
+                {% else %}
+                    Good effort! Keep practicing to improve your fashion knowledge!
+                {% endif %}
+            </div>
+        </div>
+        
+        <button class="play-again-button" onclick="playAgain()">Play Again</button>
+    </div>
+
+    <script>
+        function playAgain() {
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

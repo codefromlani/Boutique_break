@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color challenge</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/styles.css') }}">
+</head>
+<body>
+    <div class="puzzle-container">
+        <h1 class="title">Color Matching challenge</h1>
+        <p>Help us find the perfect pink outfit for the spring collection!</p>
+        
+        <div class="outfit-grid">
+            {% for outfit in puzzle.choices %}
+            <div class="outfit-card" onclick="selectOutfit('{{ outfit.color }}')">
+                <div class="outfit-preview {{ outfit.color }}-preview"></div>
+                <h3>{{ outfit.name }}</h3>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+        <div id="score" class="score">Score: {{ current_score }}</div>
+        <button id="nextButton" class="next-button" style="display: none;" onclick="goToQuiz()">Continue to Fashion Quiz</button>
+    </div>
+    
+    <script>
+        let gameScore = Number('{{ current_score }}');
+        const gameId = '{{ game_id }}';
+        
+        function selectOutfit(color) {
+            fetch(`/puzzle/color/${gameId}/check`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ chosen_color: color })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const feedbackDiv = document.getElementById('feedback');
+                feedbackDiv.textContent = data.message;
+                feedbackDiv.className = `feedback ${data.correct ? 'success' : 'error'}`;
+                
+                if (data.correct) {
+                    gameScore = data.score;
+                    document.getElementById('score').textContent = `Score: ${gameScore}`;
+                    document.getElementById('nextButton').style.display = 'inline-block';
+                }
+            });
+        }
+        
+        function goToQuiz() {
+            window.location.href = `/quiz/${gameId}`;
+        }
+    </script>
+</body>
+</html>
