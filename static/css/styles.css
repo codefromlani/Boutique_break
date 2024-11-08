@@ -96,6 +96,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
+/* color puzzle */
 .puzzle-container {
     background-color: white;
     padding: 2rem;
@@ -183,6 +184,7 @@ body {
     background-color: var(--primary-pink);
 }
 
+/* quiz */
 .quiz-container {
     background-color: white;
     padding: 2rem;
@@ -231,7 +233,6 @@ body {
     animation: fadeIn 1s ease-in;
 }
 
-/* Title styling */
 .completion-container .title {
     color: var(--accent-pink);
     font-size: 2.8rem;
@@ -239,7 +240,6 @@ body {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Subtitle styling */
 .completion-container .subtitle {
     color: var(--dark-text);
     font-size: 1.3rem;
@@ -247,7 +247,6 @@ body {
     line-height: 1.6;
 }
 
-/* Score summary container */
 .completion-container .score-summary {
     background-color: var(--soft-purple);
     padding: 2rem;
@@ -274,7 +273,6 @@ body {
     margin-top: 1rem;
 }
 
-/* Button styling */
 .play-again-button {
     background-color: var(--accent-pink);
     color: white;

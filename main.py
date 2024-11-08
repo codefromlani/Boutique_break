@@ -135,7 +135,7 @@ async def fashion_quiz(request: Request, game_id: int):
             "request": request,
             "game_id": game_id,
             "current_score": game.score,
-            "questions": QUIZ_QUESTIONS  # Make sure this is passed to the template
+            "questions": QUIZ_QUESTIONS  
         }
     )
 
